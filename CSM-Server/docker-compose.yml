@@ -1,0 +1,8 @@
+version: '3.8'
+
+services:
+   csm:
+       build: .
+       command: python ./csm/manage.py runserver localhost:8000
+       ports:
+           - 8000:8000
