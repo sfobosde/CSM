@@ -2,9 +2,7 @@ version: '3.8'
 
 services:
   web:
-    # Берем Dockerfile из каталога app
     build: ./CSM-Server
-    # Запускаем тестовый сервер
     command: python manage.py runserver 0.0.0.0:8000
     # куда будут помещены данные из каталога app
     volumes:
