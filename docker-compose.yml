@@ -1,27 +1,37 @@
 version: '3'
 
+networks:
+  backend-db:
+    driver: bridge
+
 services:
   web:
     build: ./csm-server
+    command: >
+      sh -c "python csm-server/csm_django/manage.py makemigrations &&
+             python csm-server/csm_django/manage.py migrate &&
+             python csm-server/csm_django/manage.py runserver 0.0.0.0:8000"
     volumes:
       - .:/web_django
     ports:
       - '8000:8000'
+    networks:
+      - backend-db
     depends_on:
       - mysql-db
 
   mysql-db:
-    image: mysql:5.7
+    image: mysql:8.0
     restart: always
     environment:
-      MYSQL_DATABASE: 'db'
+      MYSQL_DATABASE: 'CSM'
       MYSQL_USER: 'user'
       MYSQL_PASSWORD: 'password'
       MYSQL_ROOT_PASSWORD: 'password'
     ports:
         - '3000:3306'
-    expose:
-        - '3306'
+    networks:
+      - backend-db
     volumes:
       - mysql-db-data:/var/lib/mysql
 
