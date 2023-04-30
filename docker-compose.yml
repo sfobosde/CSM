@@ -1,0 +1,9 @@
+version: '3'
+
+services:
+  web:
+    build: ./csm-server
+    volumes:
+      - .:/web_django
+    ports:
+      - '8000:8000'
