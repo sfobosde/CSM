@@ -1,4 +1,4 @@
-from .ApiErrors import UrlParametersError
+from .ApiErrors import UrlParametersError, RequestError
 
 from django.utils.datastructures import MultiValueDictKeyError
 
@@ -18,6 +18,12 @@ def handle_error(error) -> JsonResponse:
             "message": f"Error in URL parameters: {error}"
         },
         status = 400)
+    
+    if isinstance(error, RequestError):
+        return JsonResponse({
+            "message": f"Request Error: {error}"
+        },
+        status = 500)
     
     return JsonResponse({
             "message": f"Unhandled error: {error}"
