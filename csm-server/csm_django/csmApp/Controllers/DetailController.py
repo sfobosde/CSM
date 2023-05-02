@@ -64,8 +64,6 @@ def validate_request(request):
 
 # Handle request related to detail template.
 def handle_detail_template(request) -> JsonResponse:
-    
-
     detail_template: IDetailTemplate = json.loads(request.body)
 
     return JsonResponse(data=detail_template, status=200)
