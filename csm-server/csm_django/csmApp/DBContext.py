@@ -19,14 +19,10 @@ def update_detail_template_data(template: IDetailTemplate.IDetailTemplate, db_te
     db_template.width = template.width or 0
     db_template.fitness = template.fitness or 0
 
-    try:
-        db_template.file_link = template["file_link"] or ""
-    except:
-        pass
+    if (hasattr(template, "file_link") and template.file_link):
+        db_template.file_link = template.file_link
 
-    try:
-        db_template.additional_data = template["additional_data"] or ""
-    except:
-        pass
+    if (hasattr(template, "additional_data") and template.additional_data):
+        db_template.additional_data = template.additional_data
 
     db_template.save()
