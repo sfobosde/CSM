@@ -89,5 +89,9 @@ def handle_detail_template(body, action) -> JsonResponse:
         validate_template(detail_template)
         detail_template = DBContext.create_detail_template(detail_template)
 
-    return JsonResponse({"message":"Data received successfully"})
+        return JsonResponse({"message":"Data received successfully"})
+
+    if action == "get":
+        return DBContext.get_all_templates()
+
 
