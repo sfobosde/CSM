@@ -4,10 +4,14 @@ from .ErrorHandler import handle_error
 
 from django.http import JsonResponse
 
-from ..DTOModels.DetailTemplate import IDetailTemplate
+from ..DTOModels.IDetailTemplate import IDetailTemplate
 
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
+
+from types import SimpleNamespace
+
+from .. import DBContext
 
 # Handle request with detail objects.
 @api_view(["GET", "POST"])
@@ -19,10 +23,11 @@ def handle_request(request):
         validate_request(request)
 
         object = str(request.GET['object'])
+        action = str(request.GET['action'])
         
         # Make action as detail template.
         if (object == 'template'):
-            response = handle_detail_template(request)
+            response = handle_detail_template(request.body, action)
             
 
     except Exception as error:
@@ -61,9 +66,15 @@ def validate_request(request):
             or action == "update")
         and not request.method == "POST"):
         raise RequestError(f"Action type {action} require request type: POST. Current: {request.method}")
+    
+
 
 # Handle request related to detail template.
-def handle_detail_template(request) -> JsonResponse:
-    detail_template: IDetailTemplate = json.loads(request.body)
+def handle_detail_template(body, action) -> JsonResponse:
+    detail_template: IDetailTemplate = json.loads(body, object_hook=lambda d: SimpleNamespace(**d))
 
-    return JsonResponse(data=detail_template, status=200)
+    if action == "add":
+        detail_template = DBContext.create_detail_template(detail_template)
+
+    return JsonResponse({"message":"Data received successfully"})
+
