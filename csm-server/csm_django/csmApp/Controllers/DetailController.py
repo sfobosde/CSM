@@ -1,5 +1,5 @@
 import json
-from .ApiErrors import UrlParametersError, RequestError
+from .ApiErrors import UrlParametersError, RequestError, DataValidationError
 from .ErrorHandler import handle_error
 
 from django.http import JsonResponse
@@ -67,13 +67,26 @@ def validate_request(request):
         and not request.method == "POST"):
         raise RequestError(f"Action type {action} require request type: POST. Current: {request.method}")
     
+# Validate detail template model data.
+def validate_template(template: IDetailTemplate):
+    if (not hasattr(template, "name") or not template.name):
+        raise DataValidationError("Missed required parameter: name")
 
+    if (not hasattr(template, "length") or not template.length):
+        raise DataValidationError("Missed required parameter: length")
+    
+    if (not hasattr(template, "width") or not template.width):
+        raise DataValidationError("Missed required parameter: width")
+
+    if (not hasattr(template, "fitness") or not template.fitness):
+        raise DataValidationError("Missed required parameter: fitness")
 
 # Handle request related to detail template.
 def handle_detail_template(body, action) -> JsonResponse:
     detail_template: IDetailTemplate = json.loads(body, object_hook=lambda d: SimpleNamespace(**d))
 
     if action == "add":
+        validate_template(detail_template)
         detail_template = DBContext.create_detail_template(detail_template)
 
     return JsonResponse({"message":"Data received successfully"})

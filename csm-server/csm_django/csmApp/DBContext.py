@@ -14,11 +14,19 @@ def create_detail_template(detail_template: IDetailTemplate.IDetailTemplate) -> 
 
 # Update of existing db entity.
 def update_detail_template_data(template: IDetailTemplate.IDetailTemplate, db_template: DetailTemplate):
-    #db_template.file_link = template.file_link or ""
     db_template.name = template.name or ""
     db_template.length = template.length or 0
     db_template.width = template.width or 0
     db_template.fitness = template.fitness or 0
-    #db_template.additional_data = template.additional_data or ""
+
+    try:
+        db_template.file_link = template["file_link"] or ""
+    except:
+        pass
+
+    try:
+        db_template.additional_data = template["additional_data"] or ""
+    except:
+        pass
 
     db_template.save()

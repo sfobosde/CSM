@@ -3,3 +3,6 @@ class UrlParametersError(Exception):
 
 class RequestError(Exception):
     pass
+
+class DataValidationError(Exception):
+    pass
