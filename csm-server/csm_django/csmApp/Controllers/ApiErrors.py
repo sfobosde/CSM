@@ -1,0 +1,2 @@
+class UrlParametersError(Exception):
+    pass

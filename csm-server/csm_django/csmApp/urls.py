@@ -1,7 +1,8 @@
 from . import views
 
-from django.urls import path, re_path
+from django.urls import path, re_path, include
+from .Controllers import DetailController
 
 urlpatterns = [
-    path('test/', views.test),
+    re_path(r'details/$', DetailController.handle_request),
 ]
