@@ -32,6 +32,10 @@ class BaseController():
             and not request.method == "POST"):
             raise RequestError(f"Action type {action} require request type: POST. Current: {request.method}")
         
+        if (action == "get"
+            and not request.method == "GET"):
+            raise RequestError(f"Action type {action} require request type: GET. Current: {request.method}")
+        
     # Handle requset exceptions.
     @staticmethod
     def handle_error(error) -> JsonResponse:
