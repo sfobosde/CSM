@@ -39,4 +39,4 @@ def get_all_templates():
 
     return Response(serializer.data)
 
-    
+# Create new Material object

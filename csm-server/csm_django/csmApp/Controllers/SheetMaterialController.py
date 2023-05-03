@@ -1,5 +1,4 @@
 import json
-from .ApiErrors import UrlParametersError, RequestError, DataValidationError
 from .ErrorHandler import handle_error
 
 from django.http import JsonResponse
@@ -16,8 +15,8 @@ from .. import DBContext
 from .BaseController import BaseController
 
 class SheetMaterialController(BaseController):
-
-    # Handle request with detail objects.
+    # Handle request with sheetmaterial objects.
+    @staticmethod
     @api_view(["GET", "POST"])
     def handle_request(request):
         controller_objects = ["sheet", "material"]
@@ -34,7 +33,7 @@ class SheetMaterialController(BaseController):
             action = str(request.GET['action'])
         
             # Make action as detail template.
-            if (object == 'template'):
+            if (object == 'meterial'):
                 pass
             
 
@@ -42,3 +41,8 @@ class SheetMaterialController(BaseController):
             response = handle_error(error)
     
         return response
+    
+    @staticmethod
+    def handle_material_request(body, action):
+        if action == "add":
+            DBContext.
