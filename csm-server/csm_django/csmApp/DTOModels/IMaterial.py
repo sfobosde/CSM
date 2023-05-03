@@ -6,5 +6,5 @@ class IMaterial(IDTOModel):
 
     @staticmethod
     def validate(material):
-        if (hasattr(material, "name") or not material.name):
+        if (not hasattr(material, "name") or not material.name):
             raise DataValidationError("Missed required parameter: name")

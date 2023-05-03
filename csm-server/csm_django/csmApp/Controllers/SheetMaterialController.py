@@ -50,11 +50,12 @@ class SheetMaterialController(BaseController):
 
         material: IDTOModel = json.loads(body, object_hook=lambda d: SimpleNamespace(**d))
 
-        IMaterial.validate(material)
-
-        return JsonResponse({"name":material.name})
-
         if action == "add":
-            pass
+            IMaterial.validate(material)
+            material = DBContext.create_material(material)
+            return JsonResponse({"message":"Data received successfully"})
+
+        if action == "get":
+            response = DBContext.get_all_materials()
 
         return response

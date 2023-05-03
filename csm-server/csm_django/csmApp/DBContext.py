@@ -1,5 +1,6 @@
 from .models import *
 from .DTOModels import IDetailTemplate
+from .DTOModels import IMaterial
 import uuid
 
 from .serializer import *
@@ -16,7 +17,7 @@ def create_detail_template(detail_template: IDetailTemplate.IDetailTemplate) -> 
     
     return detail_template
 
-# Update of existing db entity.
+# Update of existing db template.
 def update_detail_template_data(template: IDetailTemplate.IDetailTemplate, db_template: DetailTemplate):
     db_template.name = template.name or ""
     db_template.length = template.length or 0
@@ -40,3 +41,25 @@ def get_all_templates():
     return Response(serializer.data)
 
 # Create new Material object
+def create_material(material: IMaterial.IMaterial) -> IMaterial.IMaterial:
+    material.id = uuid.uuid4()
+
+    db_material = Material.objects.create(id=material.id)
+
+    update_material_data(material, db_material)
+
+    return material
+
+# Update of existing db material.
+def update_material_data(material: IMaterial.IMaterial, db_material: Material):
+    db_material.name = material.name
+
+    db_material.save()
+
+# Get list of all detail templates
+def get_all_materials():
+    materials =  Material.objects.all()
+
+    serializer = MaterialSerializer(materials, many=True)
+
+    return Response(serializer.data)
