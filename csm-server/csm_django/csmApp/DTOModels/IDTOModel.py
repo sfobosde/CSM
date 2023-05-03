@@ -1,0 +1,2 @@
+class IDTOModel():
+    id: str
