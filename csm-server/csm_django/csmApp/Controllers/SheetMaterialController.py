@@ -1,9 +1,9 @@
 import json
-from .ErrorHandler import handle_error
 
 from django.http import JsonResponse
 
-from ..DTOModels.IDetailTemplate import IDetailTemplate
+from ..DTOModels.IDetailTemplate import IDTOModel
+from ..DTOModels.IMaterial import IMaterial
 
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
@@ -13,6 +13,7 @@ from types import SimpleNamespace
 from .. import DBContext
 
 from .BaseController import BaseController
+
 
 class SheetMaterialController(BaseController):
     # Handle request with sheetmaterial objects.
@@ -33,16 +34,27 @@ class SheetMaterialController(BaseController):
             action = str(request.GET['action'])
         
             # Make action as detail template.
-            if (object == 'meterial'):
-                pass
+            if (object == 'material'):
+                response = SheetMaterialController.handle_material_request(request.body, action=action)
             
 
         except Exception as error:
-            response = handle_error(error)
+            response = BaseController.handle_error(error)
     
         return response
     
+    # Handle action with material
     @staticmethod
     def handle_material_request(body, action):
+        response = JsonResponse({})
+
+        material: IDTOModel = json.loads(body, object_hook=lambda d: SimpleNamespace(**d))
+
+        IMaterial.validate(material)
+
+        return JsonResponse({"name":material.name})
+
         if action == "add":
-            DBContext.
+            pass
+
+        return response

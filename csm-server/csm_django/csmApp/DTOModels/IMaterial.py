@@ -1,4 +1,5 @@
 from .IDTOModel import IDTOModel
+from ..Controllers.ApiErrors import *
 
 class IMaterial(IDTOModel):
     name: str
@@ -6,4 +7,4 @@ class IMaterial(IDTOModel):
     @staticmethod
     def validate(material):
         if (hasattr(material, "name") or not material.name):
-            pass
+            raise DataValidationError("Missed required parameter: name")

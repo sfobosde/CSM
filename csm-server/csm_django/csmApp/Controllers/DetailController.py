@@ -1,5 +1,4 @@
 import json
-from .ErrorHandler import handle_error
 
 from django.http import JsonResponse
 
@@ -37,7 +36,7 @@ class DetailController(BaseController):
             
 
         except Exception as error:
-            response = handle_error(error)
+            response = BaseController.handle_error(error)
     
         return response
 
