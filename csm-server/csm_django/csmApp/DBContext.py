@@ -1,6 +1,11 @@
 from .models import *
 from .DTOModels import IDetailTemplate
+from .DTOModels import IMaterial
 import uuid
+
+from .serializer import *
+
+from rest_framework.response import Response
 
 # Create new Detail template in database.
 def create_detail_template(detail_template: IDetailTemplate.IDetailTemplate) -> IDetailTemplate.IDetailTemplate:
@@ -12,21 +17,49 @@ def create_detail_template(detail_template: IDetailTemplate.IDetailTemplate) -> 
     
     return detail_template
 
-# Update of existing db entity.
+# Update of existing db template.
 def update_detail_template_data(template: IDetailTemplate.IDetailTemplate, db_template: DetailTemplate):
     db_template.name = template.name or ""
     db_template.length = template.length or 0
     db_template.width = template.width or 0
     db_template.fitness = template.fitness or 0
 
-    try:
-        db_template.file_link = template["file_link"] or ""
-    except:
-        pass
+    if (hasattr(template, "file_link") and template.file_link):
+        db_template.file_link = template.file_link
 
-    try:
-        db_template.additional_data = template["additional_data"] or ""
-    except:
-        pass
+    if (hasattr(template, "additional_data") and template.additional_data):
+        db_template.additional_data = template.additional_data
 
     db_template.save()
+
+# Get list of all detail templates
+def get_all_templates():
+    templates =  DetailTemplate.objects.all()
+
+    serializer = DetailTemplateSerializer(templates, many=True)
+
+    return Response(serializer.data)
+
+# Create new Material object
+def create_material(material: IMaterial.IMaterial) -> IMaterial.IMaterial:
+    material.id = uuid.uuid4()
+
+    db_material = Material.objects.create(id=material.id)
+
+    update_material_data(material, db_material)
+
+    return material
+
+# Update of existing db material.
+def update_material_data(material: IMaterial.IMaterial, db_material: Material):
+    db_material.name = material.name
+
+    db_material.save()
+
+# Get list of all detail templates
+def get_all_materials():
+    materials =  Material.objects.all()
+
+    serializer = MaterialSerializer(materials, many=True)
+
+    return Response(serializer.data)

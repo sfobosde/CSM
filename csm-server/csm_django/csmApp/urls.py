@@ -1,8 +1,10 @@
 from . import views
 
 from django.urls import path, re_path, include
-from .Controllers import DetailController
+from .Controllers.DetailController import DetailController
+from .Controllers.SheetMaterialController import SheetMaterialController
 
 urlpatterns = [
     re_path(r'details/$', DetailController.handle_request),
+    re_path(r'materials/$', SheetMaterialController.handle_request),
 ]
