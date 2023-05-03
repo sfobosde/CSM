@@ -1,9 +1,7 @@
 from .ApiErrors import *
 
+# Base Controller module.
 class BaseController():
-    controller_objects: list
-    controller_actions: list
-
     @staticmethod
     # Check is request contains required parameters.
     def validate_request(request, controller_objects, controller_actions = ["add", "get", "update", "delete"]):

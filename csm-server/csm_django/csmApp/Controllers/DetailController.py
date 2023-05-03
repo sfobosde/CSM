@@ -22,7 +22,9 @@ class DetailController(BaseController):
     def handle_request(request):
         controller_objects = ["detail", "template"]
 
-        response: JsonResponse
+        response = JsonResponse({
+            "message":"Action received but not handled."
+        }, status=201)
 
         try:
             BaseController.validate_request(request=request, controller_objects = controller_objects)

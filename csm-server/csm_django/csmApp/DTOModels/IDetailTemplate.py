@@ -10,6 +10,7 @@ class IDetailTemplate(IDTOModel):
     fitness: int
     additional_data: str
 
+    # Validate required fields.
     @staticmethod
     def validate(template):
         if (not hasattr(template, "name") or not template.name):

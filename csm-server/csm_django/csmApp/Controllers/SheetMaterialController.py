@@ -13,26 +13,32 @@ from types import SimpleNamespace
 
 from .. import DBContext
 
-from .DetailController import validate_request
+from .BaseController import BaseController
 
-# Handle request with detail objects.
-@api_view(["GET", "POST"])
-def handle_request(request):
-    response: JsonResponse
+class SheetMaterialController(BaseController):
 
-    try:
-        # Check is request valid.
-        validate_request(request)
+    # Handle request with detail objects.
+    @api_view(["GET", "POST"])
+    def handle_request(request):
+        controller_objects = ["sheet", "material"]
 
-        object = str(request.GET['object'])
-        action = str(request.GET['action'])
+        response = JsonResponse({
+            "message":"Action received but not handled."
+        }, status=201)
+
+        try:
+            # Check is request valid.
+            BaseController.validate_request(request, controller_objects=controller_objects)
+
+            object = str(request.GET['object'])
+            action = str(request.GET['action'])
         
-        # Make action as detail template.
-        if (object == 'template'):
-            response = handle_detail_template(request.body, action)
+            # Make action as detail template.
+            if (object == 'template'):
+                pass
             
 
-    except Exception as error:
-        response = handle_error(error)
+        except Exception as error:
+            response = handle_error(error)
     
-    return response
+        return response
