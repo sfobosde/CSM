@@ -4,6 +4,7 @@ from django.http import JsonResponse
 
 from ..DTOModels.IDetailTemplate import IDTOModel
 from ..DTOModels.IMaterial import IMaterial
+from ..DTOModels.ISheetMaterial import ISheetMaterial
 
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
@@ -29,15 +30,22 @@ class SheetMaterialController(BaseController):
         try:
             # Check is request valid.
             BaseController.validate_request(request, controller_objects=controller_objects)
-
             object = str(request.GET['object'])
             action = str(request.GET['action'])
-        
-            # Make action as detail template.
-            if (object == 'material'):
-                response = SheetMaterialController.handle_material_request(request.body, action=action)
-            
 
+            # Make action as material template.
+            if (object == 'material'):
+                if action == "get":
+                    response = DBContext.get_all_materials()
+                else:
+                    response = SheetMaterialController.handle_material_request(request.body, action=action)
+
+            if (object == "sheet"):
+                if action == "get":
+                    response = DBContext.get_all_sheet_materials()
+                else:
+                    response = SheetMaterialController.handle_sheet_material_request(request.body, action=action)
+        
         except Exception as error:
             response = BaseController.handle_error(error)
     
@@ -46,16 +54,29 @@ class SheetMaterialController(BaseController):
     # Handle action with material
     @staticmethod
     def handle_material_request(body, action):
-        response = JsonResponse({})
+        response = JsonResponse({}, status=201)
 
         material: IDTOModel = json.loads(body, object_hook=lambda d: SimpleNamespace(**d))
 
         if action == "add":
             IMaterial.validate(material)
-            material = DBContext.create_material(material)
-            return JsonResponse({"message":"Data received successfully"})
 
-        if action == "get":
-            response = DBContext.get_all_materials()
+            material = DBContext.create_material(material)
+            response = JsonResponse({"message":"Data received successfully"})
+
+        return response
+    
+    # Handle action with sheet material.
+    @staticmethod
+    def handle_sheet_material_request(body, action):
+        response = JsonResponse({}, status=201)
+
+        sheet_material: IDTOModel = json.loads(body, object_hook=lambda d: SimpleNamespace(**d))
+
+        if action == "add":
+            ISheetMaterial.validate(sheet_material)
+            
+            sheet_material = DBContext.create_sheet_material(sheet_material)
+            return JsonResponse({"message":"Data received successfully"})
 
         return response

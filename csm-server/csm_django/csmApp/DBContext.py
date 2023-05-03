@@ -1,11 +1,14 @@
 from .models import *
 from .DTOModels import IDetailTemplate
 from .DTOModels import IMaterial
+from .DTOModels import ISheetMaterial
 import uuid
 
 from .serializer import *
 
 from rest_framework.response import Response
+
+from .Controllers.ApiErrors import *
 
 # Create new Detail template in database.
 def create_detail_template(detail_template: IDetailTemplate.IDetailTemplate) -> IDetailTemplate.IDetailTemplate:
@@ -62,4 +65,38 @@ def get_all_materials():
 
     serializer = MaterialSerializer(materials, many=True)
 
+    return Response(serializer.data)
+
+# Create new sheet Material object
+def create_sheet_material(sheet_material: ISheetMaterial.ISheetMaterial) -> ISheetMaterial.ISheetMaterial:
+    sheet_material.id = uuid.uuid4()
+
+    db_material = SheetMaterialParams.objects.create(id=sheet_material.id)
+
+    update_sheet_material_data(sheet_material, db_material)
+
+    return sheet_material
+
+# Updating sheet material data.
+def update_sheet_material_data(sheet_material: ISheetMaterial.ISheetMaterial, db_sheet_material: SheetMaterialParams):
+    try:
+        Material.objects.get(id=sheet_material.material_id)
+
+        db_sheet_material.material_id = sheet_material.material_id
+    except:
+        raise NonExistValue(f"No material with id:{sheet_material.material_id}")
+        
+    db_sheet_material.length = sheet_material.lenght
+    db_sheet_material.width = sheet_material.width
+    db_sheet_material.fitness = sheet_material.fitness
+
+    db_sheet_material.save()
+
+
+# Get list of all detail templates
+def get_all_sheet_materials():
+    sheets =  SheetMaterialParams.objects.all()
+
+    serializer = SheetMaterialParamsSerializer(sheets, many=True)
+    
     return Response(serializer.data)

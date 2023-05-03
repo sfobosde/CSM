@@ -6,3 +6,6 @@ class RequestError(Exception):
 
 class DataValidationError(Exception):
     pass
+
+class NonExistValue(Exception):
+    pass

@@ -4,7 +4,6 @@ from django.utils.datastructures import MultiValueDictKeyError
 
 from django.http import JsonResponse
 
-
 # Base Controller module.
 class BaseController():
     @staticmethod
@@ -62,6 +61,12 @@ class BaseController():
         if (isinstance(error, DataValidationError)):
             return JsonResponse({
                 "message": f"Validation error: {error}"
+            },
+            status = 400)
+        
+        if (isinstance(error, NonExistValue)):
+            return JsonResponse({
+                "message": f"Value Error: {error}"
             },
             status = 400)
     

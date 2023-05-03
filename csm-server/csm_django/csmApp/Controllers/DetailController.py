@@ -32,9 +32,11 @@ class DetailController(BaseController):
         
             # Make action as detail template.
             if (object == 'template'):
-                response = DetailController.handle_detail_template(request.body, action)
+                if action == "get":
+                    response = DBContext.get_all_templates()
+                else:
+                    response = DetailController.handle_detail_template(request.body, action)
             
-
         except Exception as error:
             response = BaseController.handle_error(error)
     
@@ -50,8 +52,5 @@ class DetailController(BaseController):
             detail_template = DBContext.create_detail_template(detail_template)
 
             return JsonResponse({"message":"Data received successfully"})
-
-        if action == "get":
-            return DBContext.get_all_templates()
 
 
