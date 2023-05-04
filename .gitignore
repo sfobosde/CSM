@@ -162,3 +162,4 @@ cython_debug/
 # node_modules
 node_modules/
 node_modules
+csm-client/package-lock.json
