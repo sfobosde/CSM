@@ -4,6 +4,7 @@ from .DTOModels import IMaterial
 from .DTOModels import ISheetMaterial
 from .DTOModels import IDetailParams
 from .DTOModels import IDTOModel
+from .DTOModels import ICuttingOrder
 
 import uuid
 
@@ -147,3 +148,51 @@ def get_all_details():
     serializer = DetailParametersSerializer(details, many=True)
     
     return Response(serializer.data)
+
+# Get order data.
+def get_all_orders():
+    orders = CuttingOrder.objects.all()
+
+    serializer = CuttingOrderSerializer(orders, many=True)
+    
+    return Response(serializer.data)
+
+# Creating new order.
+def create_order(order: ICuttingOrder.ICuttingOrder):
+    order.id = uuid.uuid4()
+    
+    db_order = CuttingOrder.objects.create(id = order.id)
+
+    update_order_data(order, db_order)
+
+    return order
+
+# Update order data.
+def update_order_data(order: ICuttingOrder.ICuttingOrder, db_order: CuttingOrder):
+    db_order.name = order.name
+    db_order.date = order.orderDate
+
+    # Iterate order detail and save every detail linked to order.
+    for detail in order.details:
+        add_detail_to_order(detail=detail, order_id=db_order.id)
+
+    db_order.save()
+    
+# Add links of detail to order.
+def add_detail_to_order(detail: ICuttingOrder.IOrderDetail, order_id: uuid.uuid4):
+    order_detail_id = uuid.uuid4()
+
+    db_order_detail = OrderDetails.objects.create(id=order_detail_id)
+
+    order_detail: ICuttingOrder.OrderDetail = detail
+    order_detail.order_id = order_id
+
+    update_order_details(order_detail, db_order_detail)
+
+# Update orders detail links.
+def update_order_details(order_detail: ICuttingOrder.OrderDetail, db_order_detail: OrderDetails):
+    db_order_detail.detail_id = order_detail.detail_id
+    db_order_detail.detail_count = order_detail.count
+    db_order_detail.order_id = order_detail.order_id
+
+    db_order_detail.save()
