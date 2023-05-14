@@ -55,3 +55,14 @@ class OrderController(BaseController):
 
         return response
     
+    # Get Order by id.
+    @staticmethod
+    @api_view(["GET"])
+    def get_order(request):
+        response = JsonResponse({
+            "message":"Action received but not handled."
+        }, status=201)
+
+
+        return response
+    
