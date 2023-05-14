@@ -34,6 +34,8 @@ class OrderController(BaseController):
             if (object == 'order'):
                 if (action == "get"):
                     response = DBContext.get_all_orders()
+                else:
+                    response = OrderController.handle_order_request(body=request.body, action=action)
         except Exception as Error:
             response = BaseController.handle_error(error=Error)
 
@@ -43,12 +45,12 @@ class OrderController(BaseController):
     def handle_order_request(body, action):
         response = JsonResponse({}, status=201)
 
-        material: IDTOModel = json.loads(body, object_hook=lambda d: SimpleNamespace(**d))
+        order: IDTOModel = json.loads(body, object_hook=lambda d: SimpleNamespace(**d))
 
         if action == "add":
-            ICuttingOrder.validate(material)
+            ICuttingOrder.validate(order)
 
-            material = DBContext.create_material(material)
+            order = DBContext.create_order(order)
             response = JsonResponse({"message":"Data received successfully"})
 
         return response

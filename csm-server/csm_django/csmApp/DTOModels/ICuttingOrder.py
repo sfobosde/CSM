@@ -4,6 +4,8 @@ from ..Controllers.ApiErrors import *
 import uuid
 import datetime
 
+import re
+
 class ICuttingOrder(IDTOModel):
     name: str
     orderDate: datetime.date
@@ -17,9 +19,15 @@ class ICuttingOrder(IDTOModel):
         if (not hasattr(order, "orderDate") or not order.orderDate):
             raise DataValidationError("Missed required parameter: orderDate")
         
+        # Date format YYYY-MM-DD:
+        pattern = re.compile("/^\d{4}-\d{2}-\d{2}$/")
+
+        if (not pattern.match(str(order.orderDate))):
+            raise DataValidationError(f"Date value: {str(order.orderDate)} is not match to requred format YYYY-MM-DD")
+        
         if (not hasattr(order, "details") 
             or not order.details):
-            raise DataValidationError("Missed required parameter: name")
+            raise DataValidationError("Missed required parameter: details")
         
         if (len(order.details) < 1):
             raise DataValidationError("Order must contain minimum 1 detail.")

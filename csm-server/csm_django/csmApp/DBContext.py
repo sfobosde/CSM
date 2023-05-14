@@ -167,10 +167,12 @@ def create_order(order: ICuttingOrder.ICuttingOrder):
 
     return order
 
+# Update order data.
 def update_order_data(order: ICuttingOrder.ICuttingOrder, db_order: CuttingOrder):
     db_order.name = order.name
     db_order.date = order.orderDate
 
+    # Iterate order detail and save every detail linked to order.
     for detail in order.details:
         add_detail_to_order(detail=detail, order_id=db_order.id)
 
