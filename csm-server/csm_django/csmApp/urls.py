@@ -3,7 +3,7 @@ from . import views
 from django.urls import path, re_path, include
 from .Controllers.DetailController import DetailController
 from .Controllers.SheetMaterialController import SheetMaterialController
-from .Controllers.OrdersControlle import OrderController
+from .Controllers.OrderController import OrderController
 
 urlpatterns = [
     re_path(r'details/$', DetailController.handle_request),
