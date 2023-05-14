@@ -6,6 +6,8 @@ from .DTOModels import IDetailParams
 from .DTOModels import IDTOModel
 from .DTOModels import ICuttingOrder
 
+from django.http import JsonResponse
+
 import uuid
 
 from .serializer import *
@@ -196,3 +198,14 @@ def update_order_details(order_detail: ICuttingOrder.OrderDetail, db_order_detai
     db_order_detail.order_id = order_detail.order_id
 
     db_order_detail.save()
+
+
+# Get order by id.
+def get_order(order_id: uuid.uuid4):
+    order = arrange_order(order_id=order_id)
+    
+    return JsonResponse(order)
+
+# Arranging order data.
+def arrange_order(order_id: uuid.uuid4):
+    pass
