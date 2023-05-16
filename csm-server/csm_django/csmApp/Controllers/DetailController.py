@@ -15,62 +15,71 @@ from .. import DBContext
 from .BaseController import *
 
 class DetailController(BaseController):
-    # Handle request with detail objects.
+    # Get all Templates.
+    # /template/all
     @staticmethod
-    @api_view(["GET", "POST"])
-    def handle_request(request):
-        controller_objects = ["detail", "template"]
-
-        response = JsonResponse({
-            "message":"Action received but not handled."
-        }, status=201)
+    @api_view(["GET"])
+    def get_all_templates(request):
+        response = JsonResponse({}, status=201)
 
         try:
-            BaseController.validate_request(request=request, controller_objects = controller_objects)
-
-            object = str(request.GET['object'])
-            action = str(request.GET['action'])
-        
-            # Make action as detail template.
-            if object == 'template':
-                if action == "get":
-                    response = DBContext.get_all_templates()
-                else:
-                    response = DetailController.handle_detail_template(request.body, action)
-
-            if object == "detail":
-                if action == "get":
-                    response = DBContext.get_all_details()
-                else:
-                    response = DetailController.handle_detail_request(request.body, action)
-            
+            response = DBContext.get_all_templates()
         except Exception as error:
             response = BaseController.handle_error(error)
+
+        return response
     
+    # Get all details.
+    # /detail/all
+    @staticmethod
+    @api_view(["GET"])
+    def get_all_details(request):
+        response = JsonResponse({}, status=201)
+
+        try:
+            response = DBContext.get_all_details()
+        except Exception as error:
+            response = BaseController.handle_error(error)
+
         return response
 
-    # Handle request related to detail template.
+    # Create detail.
+    # /detail/add
     @staticmethod
-    def handle_detail_template(body, action) -> JsonResponse:
-        detail_template: IDTOModel = json.loads(body, object_hook=lambda d: SimpleNamespace(**d))
+    @api_view(["POST"])
+    def create_detail(request):
+        response = JsonResponse({}, status = 201)
 
-        if action == "add":
-            IDetailTemplate.validate(detail_template)
-            detail_template = DBContext.create_detail_template(detail_template)
-
-            return JsonResponse({"message":"Data received successfully"})
-        
-
-    # Handle request with detail.
-    @staticmethod
-    def handle_detail_request(body, action) -> JsonResponse:
-        detail: IDTOModel = json.loads(body, object_hook=lambda d: SimpleNamespace(**d))
-
-        if (action == "add"):
+        try:
+            detail: IDTOModel = json.loads(request.body, object_hook=lambda d: SimpleNamespace(**d))
+            
             IDetailParams.validate(detail)
 
             detail = DBContext.create_detail(detail)
 
-            return JsonResponse({"message":"Data received successfully"})
+            response = JsonResponse(data=detail)
+        except Exception as error:
+            response = BaseController.handle_error(error)
 
+        return response
+    
+    # Create template.
+    # /template/add
+    @staticmethod
+    @api_view(["POST"])
+    def create_template(request):
+        response = JsonResponse({}, status = 201)
+
+        try:
+            template: IDTOModel = json.loads(request.body, object_hook=lambda d: SimpleNamespace(**d))
+            
+            IDetailTemplate.validate(template)
+
+            template = DBContext.create_detail_template(template)
+
+            response = JsonResponse(data=template)
+        except Exception as error:
+            response = BaseController.handle_error(error)
+
+        return response
 
