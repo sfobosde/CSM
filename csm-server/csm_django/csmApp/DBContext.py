@@ -204,8 +204,38 @@ def update_order_details(order_detail: ICuttingOrder.OrderDetail, db_order_detai
 def get_order(order_id: uuid.uuid4):
     order = arrange_order(order_id=order_id)
     
-    return JsonResponse(order)
+    return order
 
 # Arranging order data.
 def arrange_order(order_id: uuid.uuid4):
-    pass
+    db_order = CuttingOrder.objects.get(id=order_id)
+
+    order: ICuttingOrder.ICuttingOrder = {
+        "id": db_order.id,
+        "name": db_order.name,
+        "orderDate": db_order.date,
+        "details": get_order_details(db_order.id)
+    }
+
+    return order
+
+# Get Details by order id.
+def get_order_details(order_id: uuid.uuid4):
+    details = []
+
+    order_details = OrderDetails.objects.filter(order_id=order_id)
+
+    for detail in order_details:
+        detail_id = detail.detail_id
+
+        db_detail = DetailParameters.objects.get(id=detail_id)
+
+        details.append({
+            "id": db_detail.id,
+            "name":db_detail.name,
+            "template_id":db_detail.template_id,
+            "material_id":db_detail.material_id,
+            "additional_data":db_detail.additional_data
+        })
+
+    return details

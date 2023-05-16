@@ -47,3 +47,23 @@ class OrderController(BaseController):
             response = BaseController.handle_error(error)
 
         return response
+    
+    # Get Order by ID.
+    # /order?id=""
+    @staticmethod
+    @api_view(["GET"])
+    def get_order(request):
+        response = JsonResponse({}, status=201)
+
+        try:
+            order_id = str(request.GET['id'])
+            
+            order = DBContext.get_order(order_id)
+
+            response = JsonResponse(data=order)
+            
+        except Exception as error:
+            response = BaseController.handle_error(error)
+
+        return response
+

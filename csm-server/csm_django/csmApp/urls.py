@@ -13,4 +13,6 @@ urlpatterns = [
     path("order/add", OrderController.create_order),
     # Get Orders List.
     path("order/all", OrderController.get_all_orders),
+    # Get Order by id
+    re_path(r'order/$', OrderController.get_order)
 ]
