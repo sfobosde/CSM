@@ -55,4 +55,21 @@ class OrderController(BaseController):
 
         return response
 
-    
+    # Add Order from request.
+    # /order/add.
+    @staticmethod
+    @api_view(["POST"])
+    def create_order(request):
+        response = JsonResponse({}, status=201)
+
+        try:
+            order: IDTOModel = json.loads(request.body, object_hook=lambda d: SimpleNamespace(**d))
+
+            ICuttingOrder.validate(order)
+
+            order = DBContext.create_order(order)
+            response = JsonResponse({"id":order.id})
+        except Exception as error:
+            response = BaseController.handle_error(error)
+
+        return response
