@@ -17,66 +17,70 @@ from .BaseController import BaseController
 
 
 class SheetMaterialController(BaseController):
-    # Handle request with sheetmaterial objects.
+    # Get all materials.
+    # /material/all.
     @staticmethod
-    @api_view(["GET", "POST"])
-    def handle_request(request):
-        controller_objects = ["sheet", "material"]
-
-        response = JsonResponse({
-            "message":"Action received but not handled."
-        }, status=201)
-
-        try:
-            # Check is request valid.
-            BaseController.validate_request(request, controller_objects=controller_objects)
-            object = str(request.GET['object'])
-            action = str(request.GET['action'])
-
-            # Make action as material template.
-            if (object == 'material'):
-                if action == "get":
-                    response = DBContext.get_all_materials()
-                else:
-                    response = SheetMaterialController.handle_material_request(request.body, action=action)
-
-            if (object == "sheet"):
-                if action == "get":
-                    response = DBContext.get_all_sheet_materials()
-                else:
-                    response = SheetMaterialController.handle_sheet_material_request(request.body, action=action)
-        
-        except Exception as error:
-            response = BaseController.handle_error(error)
-    
-        return response
-    
-    # Handle action with material
-    @staticmethod
-    def handle_material_request(body, action):
+    @api_view(["GET"])
+    def get_all_materials(request):
         response = JsonResponse({}, status=201)
 
-        material: IDTOModel = json.loads(body, object_hook=lambda d: SimpleNamespace(**d))
+        try:
+            response = DBContext.get_all_materials()
+        except Exception as error:
+            response = BaseController.handle_error(error)
 
-        if action == "add":
+        return response
+
+    # Get all sheets.
+    # /sheet/all.
+    @staticmethod
+    @api_view(["GET"])
+    def get_all_sheet_materials(request):
+        response = JsonResponse({}, status=201)
+
+        try:
+            response = DBContext.get_all_sheet_materials()
+        except Exception as error:
+            response = BaseController.handle_error(error)
+
+        return response
+    
+    # Create new material
+    # /material/add
+    @staticmethod
+    @api_view(["POST"])
+    def create_material(request):
+        response = JsonResponse({}, status = 201)
+
+        try:
+            material: IDTOModel = json.loads(request.body, object_hook=lambda d: SimpleNamespace(**d))
+            
             IMaterial.validate(material)
 
             material = DBContext.create_material(material)
-            response = JsonResponse({"message":"Data received successfully"})
+
+            response = JsonResponse(data=material)
+        except Exception as error:
+            response = BaseController.handle_error(error)
 
         return response
     
-    # Handle action with sheet material.
+    # Create new sheet
+    # /sheet/add
     @staticmethod
-    def handle_sheet_material_request(body, action):
-        response = JsonResponse({}, status=201)
+    @api_view(["POST"])
+    def create_sheet(request):
+        response = JsonResponse({}, status = 201)
 
-        sheet_material: IDTOModel = json.loads(body, object_hook=lambda d: SimpleNamespace(**d))
-
-        if action == "add":
-            ISheetMaterial.validate(sheet_material)
+        try:
+            sheet: IDTOModel = json.loads(request.body, object_hook=lambda d: SimpleNamespace(**d))
             
-            sheet_material = DBContext.create_sheet_material(sheet_material)
-            return JsonResponse({"message":"Data received successfully"})
+            ISheetMaterial.validate(sheet)
+
+            sheet = DBContext.create_sheet_material(sheet)
+
+            response = JsonResponse(data=sheet)
+        except Exception as error:
+            response = BaseController.handle_error(error)
 
         return response
