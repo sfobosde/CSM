@@ -15,43 +15,17 @@ from .. import DBContext
 from .BaseController import BaseController
 
 class OrderController(BaseController):
-    # Handle request with order.
-    @api_view(["GET", "POST"])
+    # Get Orders List.
+    # /order/all.
     @staticmethod
-    def handle_request(request):
-        controller_objects = ["order"]
-
-        response = JsonResponse({
-            "message":"Action received but not handled."
-        }, status=201)
-
-        try:
-            BaseController.validate_request(request, controller_objects)
-
-            object = str(request.GET['object'])
-            action = str(request.GET['action'])
-
-            if (object == 'order'):
-                if (action == "get"):
-                    response = DBContext.get_all_orders()
-                else:
-                    response = OrderController.handle_order_request(body=request.body, action=action)
-        except Exception as Error:
-            response = BaseController.handle_error(error=Error)
-
-        return response
-    
-    @staticmethod
-    def handle_order_request(body, action):
+    @api_view(["GET"])
+    def get_all_orders(request):
         response = JsonResponse({}, status=201)
 
-        order: IDTOModel = json.loads(body, object_hook=lambda d: SimpleNamespace(**d))
-
-        if action == "add":
-            ICuttingOrder.validate(order)
-
-            order = DBContext.create_order(order)
-            response = JsonResponse({"message":"Data received successfully"})
+        try:
+            response = DBContext.get_all_orders()
+        except Exception as error:
+            response = BaseController.handle_error(error)
 
         return response
 
