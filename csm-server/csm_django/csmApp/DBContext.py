@@ -239,3 +239,8 @@ def get_order_details(order_id: uuid.uuid4):
         })
 
     return details
+
+
+# Generate cutting maps.
+def generate_maps(order_id: uuid.uuid4):
+    pass

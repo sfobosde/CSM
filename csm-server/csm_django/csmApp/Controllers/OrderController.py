@@ -66,4 +66,23 @@ class OrderController(BaseController):
             response = BaseController.handle_error(error)
 
         return response
+    
+
+    # Start Generate Cutting map.
+    @staticmethod
+    @api_view(["GET"])
+    def generate_maps(request):
+        response = JsonResponse({}, status=201)
+
+        try:
+            order_id = str(request.GET['id'])
+            
+            maps = DBContext.generate_maps(order_id)
+
+            response = JsonResponse(data=maps)
+            
+        except Exception as error:
+            response = BaseController.handle_error(error)
+
+        return response
 
