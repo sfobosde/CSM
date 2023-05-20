@@ -6,6 +6,9 @@ from .DTOModels import IDetailParams
 from .DTOModels import IDTOModel
 from .DTOModels import ICuttingOrder
 
+from .MapCreator.models import *
+from .MapCreator.MapCreator import *
+
 from django.http import JsonResponse
 
 import uuid
