@@ -77,9 +77,9 @@ class OrderController(BaseController):
         try:
             order_id = str(request.GET['id'])
             
-            maps = DBContext.generate_maps(order_id)
+            response = DBContext.generate_maps(order_id)
 
-            response = JsonResponse(data=maps)
+            #response = JsonResponse(data=maps)
             
         except Exception as error:
             response = BaseController.handle_error(error)

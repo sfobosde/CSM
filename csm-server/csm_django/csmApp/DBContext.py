@@ -243,4 +243,25 @@ def get_order_details(order_id: uuid.uuid4):
 
 # Generate cutting maps.
 def generate_maps(order_id: uuid.uuid4):
-    pass
+    return JsonResponse(data=sort_details_by_materials(order_id), safe=False)
+
+# Get Structured details.
+def sort_details_by_materials(order_id: uuid.uuid4):
+    details = OrderDetails.objects.filter(order_id=order_id)
+
+    sorted_details: dict = {}
+
+    for detail in details:
+        detail_params = DetailParameters.objects.get(id = detail.detail_id)
+
+        for index in range(detail.detail_count):
+            material_id = str(detail_params.material_id)
+            if not material_id in sorted_details:
+                sorted_details.update({material_id:[]})
+
+            sorted_details[material_id].append({
+                "id":detail_params.id,
+            })
+
+    return sorted_details
+
