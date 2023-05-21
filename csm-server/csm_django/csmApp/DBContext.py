@@ -282,9 +282,6 @@ def get_detail_params(detail_id: uuid.uuid4):
 
 # Sort detail by material and fitness.
 def sort_details(details: list):
-    material_id_list: list
-    fitness_list: list
-
     details_nomination: dict = {}
 
     for detail in details:
