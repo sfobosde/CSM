@@ -5,12 +5,15 @@ import random
 class Generation:
     individuals: list
 
+    def __init__(self, individuals) -> None:
+        self.individuals = individuals
+
 # The individual.
 class Individual:
-    list_width: float
-    list_height: float
-
     chromosomes: list
+
+    def __init__(self, chromosomes) -> None:
+        self.chromosomes = chromosomes
 
 # Chromosome equals detail.
 class Chromosome:
@@ -37,3 +40,15 @@ class Chromosome:
     def rotate(self):
         self.width, self.height = self.height, self.width
 
+class Material:
+    width: float
+    height: float
+    sheet_id: uuid.uuid4
+
+    def __init__(self, 
+                width: float,
+                height: float,
+                sheet_id) -> None:
+        self.height = height
+        self.width = width
+        self.sheet_id = sheet_id
