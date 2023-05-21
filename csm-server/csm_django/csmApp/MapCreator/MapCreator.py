@@ -2,7 +2,7 @@ from .models import *
 
 # Create map with genetic algoritm.
 # At ends saving best generation as map.
-def create_map(material, details: list, generations_count: int = 10):
+async def create_map(material, details: list, generations_count: int = 10):
     # Creating original population.
     original_generation: Generation = create_original_generation(details, 10)
 
@@ -10,7 +10,7 @@ def create_map(material, details: list, generations_count: int = 10):
         pass
 
 # Creating original population.
-# 
+# Generate individuals with random choromosmes.
 def create_original_generation(details: list, individuals_count: int = 10) -> Generation:
     # TODO
     pass
