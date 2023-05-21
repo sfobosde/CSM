@@ -8,7 +8,12 @@ def create_map(material, details: list, generations_count: int = 10):
     # Individual arrange generation.
     
     # Creating original generation.
-    original_generation = create_original_generation(details)
+    generation = create_original_generation(details)
+
+    # Execute procedures for any generations.
+    for index in range(generations_count):
+        crossing(generation)
+
 
 # Creating original population.
 # Generate individuals with random choromosmes.
@@ -33,6 +38,20 @@ def create_original_generation(details: list, individuals_count: int = 10) -> Ge
     return Generation(individuals)
 
 # Crossing all details.
-def crossing(generation):
-    # TODO
-    pass
+def crossing(generation: Generation) -> Generation:
+    individuals = generation.individuals.copy()
+
+    free_parents = individuals.copy()
+
+    while len(free_parents) > 1:
+        first_parent: Individual = random.choice(free_parents)
+        free_parents.remove(first_parent)
+
+        second_parent: Individual = random.choice(free_parents)
+        free_parents.remove(second_parent)
+
+        child = first_parent.cross(second_parent)
+
+        individuals.append(child)
+
+

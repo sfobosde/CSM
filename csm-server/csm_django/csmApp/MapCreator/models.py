@@ -15,6 +15,18 @@ class Individual:
     def __init__(self, chromosomes) -> None:
         self.chromosomes = chromosomes
 
+    # Cross with another individual.
+    def cross(self, other: Individual):
+        cross_point = random.randint(len(self.chromosomes))
+
+        child_chromosomes = []
+
+        child_chromosomes = self.chromosomes[0:cross_point] + other.chromosomes[cross_point, len(self.chromosomes)]
+
+        return Individual(child_chromosomes)
+
+        
+
 # Chromosome equals detail.
 class Chromosome:
     detail_id: uuid.uuid4
@@ -39,6 +51,7 @@ class Chromosome:
     # Rotate detail.
     def rotate(self):
         self.width, self.height = self.height, self.width
+
 
 class Material:
     width: float
