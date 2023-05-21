@@ -246,4 +246,56 @@ def get_order_details(order_id: uuid.uuid4):
 
 # Generate cutting maps.
 def generate_maps(order_id: uuid.uuid4):
-    pass
+    # Get all order details.
+    details = get_order_details_params_list(order_id)
+
+    # Sort details by material and fitness.
+    details_nomination = sort_details(details)
+
+# Get list with detail params.
+def get_order_details_params_list(order_id: uuid.uuid4):
+    # Get data from OrderDetails.
+    order_details = OrderDetails.objects.filter(order_id=order_id)
+
+    details: list = []
+
+    for order_detail in order_details:
+        detail_params = get_detail_params(order_detail.detail_id)
+
+        for index in range(order_detail.detail_count):
+            details.append(detail_params)
+
+    return details
+
+# Get detail params by id.
+def get_detail_params(detail_id: uuid.uuid4):
+    detail_params = DetailParameters.objects.get(id=detail_id)
+
+    detail_template = DetailTemplate.objects.get(id=detail_params.template_id)
+
+    return {
+        "length":detail_template.length,
+        "width":detail_template.width,
+        "fitness":detail_template.fitness,
+        "material_id":str(detail_params.material_id)
+    }
+
+# Sort detail by material and fitness.
+def sort_details(details: list):
+    material_id_list: list
+    fitness_list: list
+
+    details_nomination: dict = {}
+
+    for detail in details:
+        material_params = (detail["material_id"], detail["fitness"])
+
+        if not material_params in details_nomination:
+            details_nomination.update({material_params: []})
+
+        details_nomination[details_nomination].append({
+            "length":detail["length"],
+            "width":detail["width"],
+        })
+
+    return details_nomination

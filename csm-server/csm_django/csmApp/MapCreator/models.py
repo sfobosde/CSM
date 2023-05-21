@@ -9,7 +9,7 @@ class Generation:
 class Individual:
     list_width: float
     list_height: float
-    
+
     chromosomes: list
 
 # Chromosome equals detail.
@@ -36,3 +36,4 @@ class Chromosome:
     # Rotate detail.
     def rotate(self):
         self.width, self.height = self.height, self.width
+
