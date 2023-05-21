@@ -32,5 +32,7 @@ urlpatterns = [
     # Get Orders List.
     path("order/all", OrderController.get_all_orders),
     # Get Order by id
-    re_path(r'order/$', OrderController.get_order)
+    re_path(r'order/$', OrderController.get_order),
+    # Generate cutting maps.
+    re_path(r'order/create_maps$', OrderController.generate_maps)
 ]

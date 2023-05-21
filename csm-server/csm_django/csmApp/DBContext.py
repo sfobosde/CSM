@@ -6,6 +6,9 @@ from .DTOModels import IDetailParams
 from .DTOModels import IDTOModel
 from .DTOModels import ICuttingOrder
 
+from .MapCreator.models import *
+from .MapCreator.MapCreator import *
+
 from django.http import JsonResponse
 
 import uuid
@@ -239,3 +242,108 @@ def get_order_details(order_id: uuid.uuid4):
         })
 
     return details
+
+
+# Generate cutting maps.
+def generate_maps(order_id: uuid.uuid4):
+    # Get all order details.
+    details = get_order_details_params_list(order_id)
+
+    # Sort details by material and fitness.
+    details_nomination = sort_details(details)
+
+    calculate_maps(details_nomination)
+
+    return JsonResponse({"response": "Calculation starts"})
+
+# Get list with detail params.
+def get_order_details_params_list(order_id: uuid.uuid4):
+    # Get data from OrderDetails.
+    order_details = OrderDetails.objects.filter(order_id=order_id)
+
+    details: list = []
+
+    for order_detail in order_details:
+        detail_params = get_detail_params(order_detail.detail_id)
+
+        for index in range(order_detail.detail_count):
+            details.append(detail_params)
+
+    return details
+
+# Get detail params by id.
+def get_detail_params(detail_id: uuid.uuid4):
+    detail_params = DetailParameters.objects.get(id=detail_id)
+
+    detail_template = DetailTemplate.objects.get(id=detail_params.template_id)
+
+    return {
+        "detail_id": str(detail_params.id),
+        "length":detail_template.length,
+        "width":detail_template.width,
+        "fitness":detail_template.fitness,
+        "material_id":str(detail_params.material_id)
+    }
+
+# Sort detail by material and fitness.
+def sort_details(details: list):
+    details_nomination: dict = {}
+
+    for detail in details:
+        material_params = (detail["material_id"], detail["fitness"])
+
+        if not material_params in details_nomination:
+            details_nomination.update({material_params: []})
+
+        details_nomination[details_nomination].append({
+            "detail_id": detail["detail_id"],
+            "length":detail["length"],
+            "width":detail["width"],
+        })
+
+    return details_nomination
+
+# Calculating maps.
+def calculate_maps(details_nomination):
+    # Find required sheets
+
+    for nomination in details_nomination:
+        details = details_nomination[nomination]
+
+        square = calculate_details_square(details)
+
+        sheet = get_required_sheets(nomination[0], nomination[1], 1.5 * square)
+
+        calculate_cutting_map(sheet, details)
+
+# Find sheets by material and fitness.
+def get_required_sheets(material_id, fitness, minimal_square) -> SheetMaterialParams:
+    sheets = SheetMaterialParams.objects.filter(material_id=material_id).filter(fitness=fitness)
+
+    minimal_remain: minimal_square
+    requred_sheet = None
+
+    for sheet in sheets:
+        sheet_square = sheet.length * sheet.width
+
+        if (sheet_square > minimal_square
+            and sheet_square - minimal_square < minimal_remain):
+            minimal_remain = sheet_square - minimal_square
+            requred_sheet = sheet
+
+    return requred_sheet
+
+# Calculationg full details square.
+def calculate_details_square(details):
+    square = 0
+
+    for detail in details:
+        square += detail["length"] * detail["width"]
+
+    return square
+
+# Distributing details to lists.
+def calculate_cutting_map(sheet: SheetMaterialParams, details):
+    material = Material(sheet.width, sheet.length, sheet.id)
+
+    create_map(material, details)
