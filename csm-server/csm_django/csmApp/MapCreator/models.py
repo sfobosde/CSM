@@ -24,8 +24,9 @@ class Individual:
         child_chromosomes = self.chromosomes[0:cross_point] + other.chromosomes[cross_point, len(self.chromosomes)]
 
         return Individual(child_chromosomes)
-
-        
+    
+    def mutate(self):
+        random.choice(self.chromosomes).mutate()
 
 # Chromosome equals detail.
 class Chromosome:

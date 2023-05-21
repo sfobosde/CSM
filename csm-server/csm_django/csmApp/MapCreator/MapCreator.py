@@ -2,7 +2,7 @@ from .models import *
 
 # Create map with genetic algoritm.
 # At ends saving best generation as map.
-def create_map(material, details: list, generations_count: int = 10):
+def create_map(material: Material, details: list, generations_count: int = 10):
     # Details is chromosomes.
     # Some details arrange an indibidual.
     # Individual arrange generation.
@@ -13,6 +13,8 @@ def create_map(material, details: list, generations_count: int = 10):
     # Execute procedures for any generations.
     for index in range(generations_count):
         crossing(generation)
+
+        mutate()
 
 
 # Creating original population.
@@ -53,5 +55,10 @@ def crossing(generation: Generation) -> Generation:
         child = first_parent.cross(second_parent)
 
         individuals.append(child)
+
+# Mutations,
+def mutate(generation: Generation):
+    for individual in generation.individuals:
+        individual.mutate()
 
 
