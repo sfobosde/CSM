@@ -163,3 +163,4 @@ cython_debug/
 node_modules/
 node_modules
 csm-client/package-lock.json
+csm-server/csm_django/csmApp/MapCreator/testing.py
