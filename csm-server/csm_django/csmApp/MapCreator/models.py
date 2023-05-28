@@ -9,9 +9,9 @@ class Generation:
         self.individuals = individuals
 
     # Calculate fitness for every individual.
-    def calculate_individuals_fitness(self):
+    def calculate_individuals_fitness(self, max_width):
         for inivid in self.individuals:
-            inivid.calculate_fitness()
+            inivid.calculate_fitness(max_width)
 
 # The individual.
 class Individual:
@@ -39,7 +39,7 @@ class Individual:
         random.choice(self.chromosomes).mutate()
 
     # Calculate individual fitness.
-    def calculate_fitness(self):
+    def calculate_fitness(self, max_width):
         sorted = self.sort()
         
         
@@ -50,6 +50,8 @@ class Individual:
         sorted.sort(key=get_square, reverse=True)
 
         print(f'{sorted[0].height} {sorted[0].width}')
+
+        return sorted
 
 def get_square(chromosome):
         return chromosome.height * chromosome.width

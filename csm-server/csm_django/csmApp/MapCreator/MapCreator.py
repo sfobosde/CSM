@@ -16,7 +16,7 @@ def create_map(material: Material, details: list, generations_count: int = 10):
 
         mutate(generation)
 
-        generation.calculate_individuals_fitness()
+        calculate_fitness(generation, material.width)
         
     return generation
 
@@ -69,5 +69,5 @@ def mutate(generation: Generation):
     for individual in generation.individuals:
         individual.mutate()
 
-def calculate_fitness(generation: Generation):
-    generation = generation.calculate_individuals_fitness()
+def calculate_fitness(generation: Generation, max_width):
+    generation = generation.calculate_individuals_fitness(max_width)
