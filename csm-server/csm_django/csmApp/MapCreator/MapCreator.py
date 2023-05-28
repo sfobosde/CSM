@@ -14,7 +14,11 @@ def create_map(material: Material, details: list, generations_count: int = 10):
     for index in range(generations_count):
         generation = crossing(generation)
 
-        generation = mutate(generation)
+        mutate(generation)
+
+        generation.calculate_individuals_fitness()
+        
+    return generation
 
 
 # Creating original population.
@@ -65,4 +69,5 @@ def mutate(generation: Generation):
     for individual in generation.individuals:
         individual.mutate()
 
-
+def calculate_fitness(generation: Generation):
+    generation = generation.calculate_individuals_fitness()

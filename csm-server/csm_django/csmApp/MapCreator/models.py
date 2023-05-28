@@ -8,6 +8,11 @@ class Generation:
     def __init__(self, individuals: list) -> None:
         self.individuals = individuals
 
+    # Calculate fitness for every individual.
+    def calculate_individuals_fitness(self):
+        for inivid in self.individuals:
+            inivid.calculate_fitness()
+
 # The individual.
 class Individual:
     chromosomes: list
@@ -32,6 +37,22 @@ class Individual:
     
     def mutate(self):
         random.choice(self.chromosomes).mutate()
+
+    # Calculate individual fitness.
+    def calculate_fitness(self):
+        sorted = self.sort()
+        
+        
+
+    def sort(self):
+        sorted = self.chromosomes.copy()
+
+        sorted.sort(key=get_square, reverse=True)
+
+        print(f'{sorted[0].height} {sorted[0].width}')
+
+def get_square(chromosome):
+        return chromosome.height * chromosome.width
 
 # Chromosome equals detail.
 class Chromosome:

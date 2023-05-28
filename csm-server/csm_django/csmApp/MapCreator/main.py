@@ -37,7 +37,7 @@ def test():
 
     material = Material(width=890, height=510, sheet_id=None)
 
-    generation: Generation = create_map(material=material, details=details, generations_count=5)
+    generation: Generation = create_map(material=material, details=details, generations_count=1)
 
     for inivid in generation.individuals:
         individ: Individual = inivid
