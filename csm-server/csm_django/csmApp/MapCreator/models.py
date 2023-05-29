@@ -1,5 +1,6 @@
 import uuid
 import random
+from binaryTree import Polygone
 
 # The generation model.
 class Generation:
@@ -41,9 +42,14 @@ class Individual:
     # Calculate individual fitness.
     def calculate_fitness(self, max_width, max_height):
         sorted = self.sort()
-        
-        first_detail = sorted.pop(0)
 
+        polygone = Polygone(max_width, max_height)
+
+        for detail in sorted:
+            polygone.add_detail(detail)
+
+        print("================================================================")
+        polygone.print_tree()
 
 
         

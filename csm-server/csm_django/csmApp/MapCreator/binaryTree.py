@@ -1,6 +1,3 @@
-from .models import *
-from .binaryTree import Polygone
-
 class Polygone:
     x: float
     y: float
@@ -8,11 +5,11 @@ class Polygone:
     width: float
     height: float
 
-    detail: Chromosome
+    detail = None
 
-    down: Polygone
-    right: Polygone
-    root: Polygone
+    down = None
+    right = None
+    root = None
 
     is_free: bool
 
@@ -25,46 +22,47 @@ class Polygone:
 
         self.root = None
 
-        is_free = True
+        self.is_free = True
 
-    def add_detail(self, detail: Chromosome, polygone: Polygone = None):
-        if polygone == None:
-            polygone = self
+    def add_detail(self, detail):
+        if (self.can_place(detail) and self.is_free):
+            self.down = Polygone(detail.width, self.height - detail.height)
+            self.down.y = self.y + detail.height
+            self.down.x = self.x
+            self.down.root = self
 
-        if polygone.can_place(detail) and polygone.is_free:
-            polygone.width = detail.width
-            polygone.height = detail.height
+            self.right = Polygone(self.width - detail.width, self.height)
+            self.right.x = self.x + detail.width
+            self.right.y = self.y
+            self.right.root = self
 
-            polygone.down = Polygone(detail.width, polygone.height - detail.height)
-            polygone.down.y = self.y + detail.height
-            polygone.down.x = self.x
-            polygone.down.root = self
+            self.is_free = False
+            self.detail = detail
 
-            polygone.right = Polygone(polygone.width - detail.width, polygone.height)
-            polygone.right.x = polygone.x + detail.width
-            polygone
-            polygone.right.root = self
+            self.width = detail.width
+            self.height = detail.height
+            print(f"{self.x} {self.y} {self.width} {self.height}")
 
-            polygone.is_free = False
-            polygone.detail = detail
+        elif (self.down != None
+            and self.down.can_place(detail) 
+            and self.down.is_free):
+            self.down.add_detail(detail)
 
-        elif (polygone.down != None
-            and polygone.down.can_place(detail) 
-            and polygone.down.is_free):
-            polygone.down.add_detail(detail, polygone.down)
+        elif (self.right != None
+            and self.right.can_place(detail) 
+            and self.right.is_free):
+            self.right.add_detail(detail)
 
-        elif (polygone.right != None
-            and polygone.right.can_place(detail) 
-            and polygone.right.is_free):
-            polygone.right.add_detail(detail, polygone.right)
+        elif (self.root != None
+              and self.root.right != None
+              and self.root.right.can_place(detail)
+              and self.root.right.is_free):
+            self.root.right.add_detail(detail)
 
-        elif (polygone.root != None
-              and polygone.root.right != None
-              and polygone.root.right.can_place(detail)
-              and polygone.root.right.is_free):
-            polygone.root.right.add_detail(detail, polygone.root.right)
+        else:
+            raise Exception("Cant place")
 
-    def can_place(self, detail: Chromosome):
+    def can_place(self, detail):
         polygone_square = self.height * self.width
         detail_square = detail.height * detail.width
 
@@ -73,3 +71,12 @@ class Polygone:
             and detail.height <= self.height
             and detail.width <= self.width 
         )
+    
+    def print_tree(self):
+        print(f'x:{self.x}  y:{self.y}  width:{self.width}     height:{self.height}')
+
+        if (self.down):
+            self.print_tree(self.down)
+        if (self.right):
+            self.print_tree(self.right)
+
