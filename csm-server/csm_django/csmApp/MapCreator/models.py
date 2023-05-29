@@ -66,10 +66,7 @@ class Chromosome:
     width: float
     height: float
     rotation: float
-
-    x: float
-    y: float
-
+    
     def __init__(self, 
                 detail_id: uuid.uuid4,
                 width: float,
