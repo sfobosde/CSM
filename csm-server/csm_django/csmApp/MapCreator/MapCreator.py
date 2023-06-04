@@ -1,4 +1,4 @@
-from .models import *
+from models import *
 
 # Create map with genetic algoritm.
 # At ends saving best generation as map.
@@ -12,21 +12,27 @@ def create_map(material: Material, details: list, generations_count: int = 10):
 
     # Execute procedures for any generations.
     for index in range(generations_count):
-        crossing(generation)
+        generation = crossing(generation)
 
-        mutate()
+        mutate(generation)
+
+        calculate_fitness(generation, material.width, material.height)
+        
+    return generation
 
 
 # Creating original population.
 # Generate individuals with random choromosmes.
-def create_original_generation(details: list, individuals_count: int = 10) -> Generation:
+def create_original_generation(details: list, individuals_count: int = 2) -> Generation:
     individuals: list = []
 
     for i in range(individuals_count):
         chromosomes: list = []
 
         for detail in details:
-            chromosome = Chromosome(detail["detail_id"],detail["width"],detail["length"])
+            chromosome = Chromosome(detail_id=detail["detail_id"],
+                                    width=detail["width"],
+                                    height=detail["length"])
 
             # Mutate with probability 50 %.
             chromosome.mutate(30)
@@ -56,9 +62,12 @@ def crossing(generation: Generation) -> Generation:
 
         individuals.append(child)
 
+        return Generation(individuals)
+
 # Mutations,
 def mutate(generation: Generation):
     for individual in generation.individuals:
         individual.mutate()
 
-
+def calculate_fitness(generation: Generation, max_width, max_height):
+    generation = generation.calculate_individuals_fitness(max_width, max_height)
