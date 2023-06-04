@@ -45,9 +45,9 @@ def test():
         for chromosome in individ.chromosomes:
             chrom: Chromosome = chromosome
 
-            print(f'{chrom.height}\t{chrom.width}\n')
+            #print(f'{chrom.height}\t{chrom.width}\n')
 
-        print("=================")
+        #print("=================")
 
 if __name__ == '__main__':
     test()

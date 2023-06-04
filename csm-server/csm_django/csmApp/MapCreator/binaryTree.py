@@ -17,7 +17,9 @@ class Polygone:
 
     stack: str
 
-    def __init__(self, width: float, height: float) -> None:
+    on_expand: any
+
+    def __init__(self, width: float, height: float, on_expand) -> None:
         self.width = width
         self.height = height
 
@@ -32,14 +34,16 @@ class Polygone:
 
         self.stack = "root-"
 
+        self.on_expand = on_expand
+
     def add_detail(self, detail):
-        print(f"stack:{self.stack}, detail: {detail.width} {detail.height}")
+        # print(f"stack:{self.stack}, detail: {detail.width} {detail.height}")
         
         if (self.can_place(detail) and self.is_free):
             if (self.is_column_header):
-                self.down = Polygone(detail.width, self.height - detail.height)
+                self.down = Polygone(detail.width, self.height - detail.height, self.on_expand)
             else:
-                self.down = Polygone(self.width, self.height - detail.height)
+                self.down = Polygone(self.width, self.height - detail.height, self.on_expand)
 
             self.down.y = self.y + detail.height
             self.down.x = self.x
@@ -48,9 +52,9 @@ class Polygone:
             self.down.stack = self.stack + "d-"
 
             if (self.is_column_header):
-                self.right = Polygone(self.width - detail.width, self.height)
+                self.right = Polygone(self.width - detail.width, self.height, self.on_expand)
             else:
-                self.right = Polygone(self.width - detail.width, detail.height)
+                self.right = Polygone(self.width - detail.width, detail.height, self.on_expand)
 
             self.right.x = self.x + detail.width
             self.right.y = self.y
@@ -63,7 +67,10 @@ class Polygone:
 
             self.width = detail.width
             self.height = detail.height
-            print(f"{self.x} {self.y} {self.width} {self.height}")
+
+            self.on_expand(self.x + self.width, self.y + self.height)
+
+            # print(f"{self.x} {self.y} {self.width} {self.height}")
 
         elif (self.down != None and self.down.can_place(detail)):
             self.down.add_detail(detail)
@@ -85,15 +92,6 @@ class Polygone:
             
             polygone.add_detail(detail)
 
-            # while (not polygone.can_place(detail)):
-            #     if (polygone.stack == polygone.root.right.stack):
-            #         polygone = polygone.right
-            #     else: 
-            #         print(polygone.stack)
-            #         polygone = polygone.root.root.right
-
-            # polygone.add_detail(detail)
-        
     def can_place(self, detail):
         polygone_square = self.height * self.width
         detail_square = detail.height * detail.width
