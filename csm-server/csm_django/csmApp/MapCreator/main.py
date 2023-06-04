@@ -35,7 +35,7 @@ def test():
     {"detail_id": uuid.uuid4(), "width": 155, "length": 117},
 ]
 
-    material = Material(width=8900, height=5100, sheet_id=None)
+    material = Material(width=890, height=510, sheet_id=None)
 
     generation: Generation = create_map(material=material, details=details, generations_count=1)
 
