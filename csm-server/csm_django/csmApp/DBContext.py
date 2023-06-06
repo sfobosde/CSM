@@ -346,4 +346,8 @@ def calculate_details_square(details):
 def calculate_cutting_map(sheet: SheetMaterialParams, details):
     material = Material(sheet.width, sheet.length, sheet.id)
 
-    create_map(material, details)
+    create_map(material=material,
+               details=details,
+               generations_count=10,
+               individuals_count=50,
+               unused_limit=20)

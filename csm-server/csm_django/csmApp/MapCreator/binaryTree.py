@@ -103,7 +103,8 @@ class Polygone:
         )
     
     def print_tree(self):
-        print(f'stack:{self.stack} x:{self.x}  y:{self.y}  width:{self.width}     height:{self.height}')
+        if (self.detail != None):
+            print(f'x:{self.x} y:{self.y} width:{self.width} height:{self.height} detail:{self.detail.detail_id} stack:{self.stack} ')
 
         if (self.down):
             self.down.print_tree()
