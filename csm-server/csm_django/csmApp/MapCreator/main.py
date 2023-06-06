@@ -37,7 +37,7 @@ def test():
 
     material = Material(width=890, height=510, sheet_id=None)
 
-    generation: Generation = create_map(material=material, details=details, generations_count=1)
+    generation: Generation = create_map(material=material, details=details, generations_count=30, individuals_count=50, unused_limit=10)
 
     for inivid in generation.individuals:
         individ: Individual = inivid
@@ -45,9 +45,9 @@ def test():
         for chromosome in individ.chromosomes:
             chrom: Chromosome = chromosome
 
-            print(f'{chrom.height}\t{chrom.width}\n')
+            #print(f'{chrom.height}\t{chrom.width}\n')
 
-        print("=================")
+        #print("=================")
 
 if __name__ == '__main__':
     test()
