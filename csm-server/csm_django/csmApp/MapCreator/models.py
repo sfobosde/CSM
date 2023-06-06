@@ -11,10 +11,52 @@ class Generation:
     def __init__(self, individuals: list) -> None:
         self.individuals = individuals
 
+    def mutate(self):
+        for individual in self.individuals:
+            individual.mutate()
+
+    # Crossing all details.
+    def crossing(self):
+        free_parents = self.individuals.copy()
+
+        while len(free_parents) > 1:
+            first_parent: Individual = random.choice(free_parents)
+            free_parents.remove(first_parent)
+
+            second_parent: Individual = random.choice(free_parents)
+            free_parents.remove(second_parent)
+
+            child = first_parent.cross(second_parent)
+
+            self.individuals.append(child)
+
     # Calculate fitness for every individual.
     def calculate_individuals_fitness(self, max_width, max_height):
-        for inivid in self.individuals:
-            inivid.calculate_fitness(max_width, max_height)
+        for individ in self.individuals:
+            individ.calculate_fitness(max_width, max_height)
+
+    def remove_lifeless(self):
+        if (not hasattr(self, "individuals") or len(self.individuals) < 2):
+            raise Exception("Все особи неживые")
+        
+        for individ in self.individuals:
+            if (not individ.adapted):
+                index = self.individuals.index(individ)
+                self.individuals.pop(index)
+
+        if (not hasattr(self, "individuals") or len(self.individuals) < 2):
+            raise Exception("Все особи неживые")
+
+    def find_best(self):
+        best = self.individuals[0]
+
+        for individ in self.individuals:
+            if (individ.adapted and individ.unused_area_part < best.unused_area_part):
+                best = individ
+
+        # print(f'The best: {best.unused_area_part}')
+
+        return best
 
 # The individual.
 class Individual:
@@ -31,13 +73,23 @@ class Individual:
     useful_part: float
     unused_area_part: float
 
+    adapted: bool
+
     def __init__(self, chromosomes: list) -> None:
         self.chromosomes = chromosomes
 
         self.details_square = 0
 
+        self.occupied_area_square = 0
+        self.unused_area_square = 0
+
+        self.useful_part = 0
+        self.unused_area_part = 100
+
         self.x_max = 0
         self.y_max = 0
+
+        self.adapted = True
 
         for detail in self.chromosomes:
             self.details_square += detail.square
@@ -75,39 +127,46 @@ class Individual:
             self.calculate_fitness_params(max_width, max_height)
 
         except Exception as err:
+            self.adapted = False
             print(err)
+            print()
         
         #polygone.print_tree()
 
     def calculate_fitness_params(self, max_width, max_height):
-        self.occupied_area_square = self.x_max*self.y_max
+        if (not self.adapted):
+            self.unused_area_part = 100
+            self.useful_part = 0
+            self.__remain_square = 0
+        else:
+            self.occupied_area_square = self.x_max*self.y_max
 
-        self.useful_part = 100 * self.details_square / self.occupied_area_square
+            self.useful_part = 100 * self.details_square / self.occupied_area_square
 
-        self.unused_area_square = self.occupied_area_square - self.details_square
-        self.unused_area_part = 100 * self.unused_area_square / self.occupied_area_square
+            self.unused_area_square = self.occupied_area_square - self.details_square
+            self.unused_area_part = 100 * self.unused_area_square / self.occupied_area_square
 
-        self.__remainX = self.x_max
-        self.__remainY = self.y_max
+            self.__remainX = self.x_max
+            self.__remainY = self.y_max
 
-        self.__remain_width = max_width - self.x_max
-        self.__remain_height = max_height
+            self.__remain_width = max_width - self.x_max
+            self.__remain_height = max_height
 
-        self.__remain_square = self.__remain_width * self.__remain_height
+            self.__remain_square = self.__remain_width * self.__remain_height
 
-        print(f'Area start at: 0, 0')
-        print(f'Area end at: {self.x_max}, {self.y_max}')
+        # print(f'Area start at: 0, 0')
+        # print(f'Area end at: {self.x_max}, {self.y_max}')
 
-        print(f'Occupied area: {self.occupied_area_square}')
+        # print(f'Occupied area: {self.occupied_area_square}')
 
-        print(f'Details area square:{self.details_square}')
-        print(f'Details area part {self.useful_part} %')
+        # print(f'Details area square:{self.details_square}')
+        # print(f'Details area part {self.useful_part} %')
 
-        print(f'Unused area square: {self.unused_area_square}')
+        # print(f'Unused area square: {self.unused_area_square}')
         print(f'Unused area part: {self.unused_area_part}')
 
-        print(f'Remain: x,y:({self.__remainX} {self.__remainY}) size:({self.__remain_width} {self.__remain_height})')
-        print()
+        # print(f'Remain: x,y:({self.__remainX} {self.__remainY}) size:({self.__remain_width} {self.__remain_height})')
+        # print()
 
     # Soritng details by square.
     def sort(self):

@@ -2,28 +2,53 @@ from models import *
 
 # Create map with genetic algoritm.
 # At ends saving best generation as map.
-def create_map(material: Material, details: list, generations_count: int = 10):
+def create_map(material: Material, details: list, generations_count: int = 10, individuals_count: int = 2, unused_limit: float = 15):
     # Details is chromosomes.
     # Some details arrange an indibidual.
     # Individual arrange generation.
     
     # Creating original generation.
-    generation = create_original_generation(details)
+    generation = create_original_generation(details, individuals_count)
+
+    index = 0
+
+    best_unused = unused_limit
+
+    first_best = None
+    second_best = None
 
     # Execute procedures for any generations.
-    for index in range(generations_count):
-        generation = crossing(generation)
+    while (index < generations_count
+            and best_unused >= unused_limit):
+        generation.crossing()
 
-        mutate(generation)
+        generation.mutate()
 
-        calculate_fitness(generation, material.width, material.height)
+        generation.calculate_individuals_fitness(material.width, material.height)
+
+        # generation.remove_lifeless()
+
+        if (first_best == None):
+            first_best = generation.find_best()
+            second_best = first_best
+        else:
+            second_best = generation.find_best()
+
+        if (second_best.unused_area_part < first_best.unused_area_part):
+            first_best = second_best
+            best_unused = first_best.unused_area_part
+
+        index += 1
+
+    print(first_best.unused_area_part)
+    input()
         
     return generation
 
 
 # Creating original population.
 # Generate individuals with random choromosmes.
-def create_original_generation(details: list, individuals_count: int = 2) -> Generation:
+def create_original_generation(details: list, individuals_count) -> Generation:
     individuals: list = []
 
     for i in range(individuals_count):
@@ -44,30 +69,3 @@ def create_original_generation(details: list, individuals_count: int = 2) -> Gen
         individuals.append(individual)
 
     return Generation(individuals)
-
-# Crossing all details.
-def crossing(generation: Generation) -> Generation:
-    individuals = generation.individuals.copy()
-
-    free_parents = individuals.copy()
-
-    while len(free_parents) > 1:
-        first_parent: Individual = random.choice(free_parents)
-        free_parents.remove(first_parent)
-
-        second_parent: Individual = random.choice(free_parents)
-        free_parents.remove(second_parent)
-
-        child = first_parent.cross(second_parent)
-
-        individuals.append(child)
-
-        return Generation(individuals)
-
-# Mutations,
-def mutate(generation: Generation):
-    for individual in generation.individuals:
-        individual.mutate()
-
-def calculate_fitness(generation: Generation, max_width, max_height):
-    generation = generation.calculate_individuals_fitness(max_width, max_height)
