@@ -74,8 +74,6 @@ class OrderController(BaseController):
     def generate_maps(request):
         response = JsonResponse({}, status=201)
 
-        return JsonResponse({})
-
         try:
             order_id = str(request.GET['id'])
             

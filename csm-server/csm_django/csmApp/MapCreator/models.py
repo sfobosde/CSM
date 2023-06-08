@@ -40,7 +40,7 @@ class Generation:
             raise Exception("Все особи неживые")
         
         for individ in self.individuals:
-            if (not individ.adapted):
+            if (not individ.adapted or individ.unused_area_part > 25):
                 index = self.individuals.index(individ)
                 self.individuals.pop(index)
 
@@ -74,6 +74,8 @@ class Individual:
     unused_area_part: float
 
     adapted: bool
+
+    polygone: Polygone
 
     def __init__(self, chromosomes: list) -> None:
         self.chromosomes = chromosomes
@@ -125,6 +127,7 @@ class Individual:
             #print("================================================================")
 
             self.calculate_fitness_params(max_width, max_height)
+            self.polygone = polygone
 
         except Exception as err:
             self.adapted = False

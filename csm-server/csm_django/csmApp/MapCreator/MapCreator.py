@@ -2,7 +2,7 @@ from models import *
 
 # Create map with genetic algoritm.
 # At ends saving best generation as map.
-def create_map(material: Material, details: list, generations_count: int = 10, individuals_count: int = 2, unused_limit: float = 15):
+def create_map(material: Material, details: list, generations_count: int = 10, individuals_count: int = 2, unused_limit: float = 15) -> Individual:
     # Details is chromosomes.
     # Some details arrange an indibidual.
     # Individual arrange generation.
@@ -26,7 +26,7 @@ def create_map(material: Material, details: list, generations_count: int = 10, i
 
         generation.calculate_individuals_fitness(material.width, material.height)
 
-        # generation.remove_lifeless()
+        generation.remove_lifeless()
 
         if (first_best == None):
             first_best = generation.find_best()
@@ -42,8 +42,9 @@ def create_map(material: Material, details: list, generations_count: int = 10, i
 
     print(first_best.unused_area_part)
     input()
+    print_details(first_best)
         
-    return generation
+    return first_best
 
 
 # Creating original population.
@@ -60,7 +61,7 @@ def create_original_generation(details: list, individuals_count) -> Generation:
                                     height=detail["length"])
 
             # Mutate with probability 50 %.
-            chromosome.mutate(30)
+            chromosome.mutate(100)
 
             chromosomes.append(chromosome)
 
@@ -69,3 +70,6 @@ def create_original_generation(details: list, individuals_count) -> Generation:
         individuals.append(individual)
 
     return Generation(individuals)
+
+def print_details(best: Individual):
+    best.polygone.print_tree()
