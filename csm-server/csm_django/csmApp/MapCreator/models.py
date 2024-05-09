@@ -1,6 +1,6 @@
 import uuid
 import random
-from binaryTree import Polygone
+from .binaryTree import Polygone
 
 # The generation model.
 class Generation:
