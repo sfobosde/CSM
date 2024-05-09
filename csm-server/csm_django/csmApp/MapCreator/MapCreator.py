@@ -1,4 +1,4 @@
-from models import *
+from .models import *
 
 # Create map with genetic algoritm.
 # At ends saving best generation as map.
