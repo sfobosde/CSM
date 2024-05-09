@@ -5,15 +5,6 @@ networks:
     driver: bridge
 
 services:
-  frontend:
-    build: ./client/csm-client
-    ports:
-      - '4000:4200'
-    command: sh -c "npm start"
-    depends_on:
-      - web
-
-
   web:
     build: ./csm-server
     command: >
