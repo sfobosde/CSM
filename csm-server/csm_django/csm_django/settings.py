@@ -85,7 +85,6 @@ WSGI_APPLICATION = 'csm_django.wsgi.application'
 DB_USER = os.environ.get('DB_USER')
 DB_NAME = os.environ.get('DB_NAME')
 DB_PASSWORD = os.environ.get('DB_PASSWORD')
-DB_HOST = os.environ.get('DB_HOST')
 
 DATABASES = {
     'default': {
@@ -93,10 +92,6 @@ DATABASES = {
         'NAME': DB_NAME,
         'USER': DB_USER,
         'PASSWORD': DB_PASSWORD,
-        # 'HOST': DB_HOST,
-        # 'NAME': 'db',
-        # 'USER': 'user',
-        # 'PASSWORD': 'password',
         'HOST': 'mysql-db',
         'PORT': '3306'
     }
