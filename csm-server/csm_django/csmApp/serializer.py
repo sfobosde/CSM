@@ -26,7 +26,7 @@ class DetailParametersSerializer(serializers.ModelSerializer):
 # Materials.        
 class MaterialSerializer(serializers.ModelSerializer):
     class Meta:
-        model = model.Material
+        model = model.Materials
         fields = ('id', 
                   'name')
         

@@ -6,34 +6,46 @@ networks:
 
 services:
   web:
-    build: ./csm-server
+    build: 
+      context: ./csm-server
+      dockerfile: Dockerfile
     command: >
       sh -c "python csm-server/csm_django/manage.py makemigrations &&
              python csm-server/csm_django/manage.py migrate &&
              python csm-server/csm_django/manage.py runserver 0.0.0.0:8000"
     volumes:
       - .:/web_django
+    environment:
+      - DB_USER=${DB_USER}
+      - DB_NAME=${DB_NAME}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_HOST=${DB_HOST}
     ports:
       - '8000:8000'
     networks:
       - backend-db
     depends_on:
       - mysql-db
+    restart: always
 
   mysql-db:
     image: mysql:8.0
     restart: always
     environment:
-      MYSQL_DATABASE: 'CSM'
-      MYSQL_USER: 'user'
-      MYSQL_PASSWORD: 'password'
-      MYSQL_ROOT_PASSWORD: 'password'
+      # MYSQL_DATABASE: 'CSM'
+      # MYSQL_USER: 'user'
+      # MYSQL_PASSWORD: 'password'
+      # MYSQL_ROOT_PASSWORD: 'password'
+      - MYSQL_USER=${DB_USER}
+      - MYSQL_PASSWORD=${DB_PASSWORD}
+      - MYSQL_DATABASE=${DB_NAME}
     ports:
         - '3000:3306'
     networks:
       - backend-db
     volumes:
       - mysql-db-data:/var/lib/mysql
+    
 
 
 volumes:

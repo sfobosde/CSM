@@ -44,7 +44,7 @@ class DetailParameters(models.Model):
 
 
 # Materials.
-class Material(models.Model):
+class Materials(models.Model):
     # Material id.
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
 
