@@ -27,6 +27,7 @@ SECRET_KEY = 'django-insecure-!z_zbknx7*4f7_o!1&l9$yn^7zyvd*o&@y-602_l=zlsrs+7+=
 DEBUG = True
 
 # ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS').split(", ")
 
 CORS_ORIGIN_ALLOW_ALL = True
 #CORS_ORIGIN_WHITELIST = ('http://localhost:8081')
