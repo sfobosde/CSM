@@ -58,7 +58,7 @@ def get_all_templates():
 def create_material(material: IMaterial.IMaterial) -> IMaterial.IMaterial:
     material.id = uuid.uuid4()
 
-    db_material = Material.objects.create(id=material.id)
+    db_material = Materials.objects.create(id=material.id)
 
     update_material_data(material, db_material)
 
@@ -72,7 +72,7 @@ def update_material_data(material: IMaterial.IMaterial, db_material: Material):
 
 # Get list of all detail templates
 def get_all_materials():
-    materials =  Material.objects.all()
+    materials =  Materials.objects.all()
 
     serializer = MaterialSerializer(materials, many=True)
 
@@ -91,7 +91,7 @@ def create_sheet_material(sheet_material: ISheetMaterial.ISheetMaterial) -> IShe
 # Updating sheet material data.
 def update_sheet_material_data(sheet_material: ISheetMaterial.ISheetMaterial, db_sheet_material: SheetMaterialParams):
     # Try find 
-    if (is_object_exists(Material, sheet_material.material_id)):
+    if (is_object_exists(Materials, sheet_material.material_id)):
         db_sheet_material.material_id = sheet_material.material_id
 
         db_sheet_material.length = sheet_material.lenght
