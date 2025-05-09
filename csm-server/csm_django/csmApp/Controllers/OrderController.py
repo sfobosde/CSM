@@ -60,7 +60,7 @@ class OrderController(BaseController):
             
             order = DBContext.get_order(order_id)
 
-            response = JsonResponse(data=order)
+            response = JsonResponse(data=order.__dict__)
             
         except Exception as error:
             response = BaseController.handle_error(error)

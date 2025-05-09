@@ -57,7 +57,7 @@ class DetailController(BaseController):
 
             detail = DBContext.create_detail(detail)
 
-            response = JsonResponse(data=detail)
+            response = JsonResponse(data=detail.__dict__)
         except Exception as error:
             response = BaseController.handle_error(error)
 
@@ -77,7 +77,7 @@ class DetailController(BaseController):
 
             template = DBContext.create_detail_template(template)
 
-            response = JsonResponse(data=template)
+            response = JsonResponse(data=template.__dict__)
         except Exception as error:
             response = BaseController.handle_error(error)
 

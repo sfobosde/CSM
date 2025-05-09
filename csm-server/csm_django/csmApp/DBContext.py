@@ -56,6 +56,7 @@ def get_all_templates():
 
 # Create new Material object
 def create_material(material: IMaterial.IMaterial) -> IMaterial.IMaterial:
+    print("create_material")
     material.id = uuid.uuid4()
 
     db_material = Materials.objects.create(id=material.id)
@@ -100,7 +101,7 @@ def update_sheet_material_data(sheet_material: ISheetMaterial.ISheetMaterial, db
 
         db_sheet_material.save()
     else:
-        raise NonExistValue(f"No material with id:{sheet_material.material_id}")
+        raise NonExistValue(f"Update sheet material: No material with id:{sheet_material.material_id}")
 
 # Check object exists id db by id.
 def is_object_exists(model: models.Model, id) -> bool:
@@ -135,7 +136,7 @@ def update_detail_data(detail: IDetailParams.IDetailParams, db_detail: DetailPar
         raise NonExistValue(f"No template with id:{detail.template_id}")
     
     if (not is_object_exists(Material, detail.material_id)):
-        raise NonExistValue(f"No material with id:{detail.material_id}")
+        raise NonExistValue(f"Update detail id: No material with id:{detail.material_id}")
     
     db_detail.template_id = detail.template_id
     db_detail.material_id = detail.material_id
