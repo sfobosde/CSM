@@ -53,13 +53,14 @@ class SheetMaterialController(BaseController):
         response = JsonResponse({}, status = 201)
 
         try:
+            print("create_material req")
             material: IDTOModel = json.loads(request.body, object_hook=lambda d: SimpleNamespace(**d))
             
             IMaterial.validate(material)
 
             material = DBContext.create_material(material)
-
-            response = JsonResponse(data=material)
+            print(material)
+            response = JsonResponse(data=material.__dict__)
         except Exception as error:
             response = BaseController.handle_error(error)
 
@@ -79,7 +80,7 @@ class SheetMaterialController(BaseController):
 
             sheet = DBContext.create_sheet_material(sheet)
 
-            response = JsonResponse(data=sheet)
+            response = JsonResponse(data=sheet.__dict__)
         except Exception as error:
             response = BaseController.handle_error(error)
 
